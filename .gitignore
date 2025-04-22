@@ -1,0 +1,26 @@
+
+
+/blob-report/
+
+# Node.js
+node_modules/
+package-lock.json
+
+# Playwright test outputs
+test-results/
+playwright-report/
+
+# Playwright downloads (browsers)
+playwright/.cache/
+
+reports/
+
+# VS Code config (opcional)
+.vscode/
+
+# Logs
+*.log
+
+# Sistema operativo
+.DS_Store
+Thumbs.db
