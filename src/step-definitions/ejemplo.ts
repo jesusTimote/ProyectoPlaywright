@@ -2,14 +2,15 @@ import { Given, Then, When } from "@cucumber/cucumber";
 import Prueba1 from "../page-object/ejemplos";
 
 const prueba1 = new Prueba1();
-Given('que estoy en la página de inicio de Demoblaze', async function () {
-    await prueba1.navigate();
-  });
+Given('inicio sesion en la pagina OrangeHRM',async function () {
+  await prueba1.navigate();
+})
 
-When('verifico que el título de la página es "STORE"',async function () {
+Then('ingreso con las credenciales de usuario',async function () {
+ await prueba1.singIn();
 
-});
+})
 
-Then('debería ver la lista de productos disponibles', async function () {
-
-});
+When('selecciono el menu de Admin',async function () {
+  await prueba1.ValidateDasahboard();
+})

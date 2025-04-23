@@ -14,7 +14,11 @@ Para instalar todas las dependencias necesarias para este proyecto, sigue los pa
 ## Ejecución de Casos de Prueba
 
 Para ejecutar los casos de prueba, utiliza los siguientes comandos:
+1. Crear la carpeta de reportes:
 
+    ```bash
+     npm run init
+    ```
 1. Ejecutar todos los casos de prueba:
 
     ```bash
@@ -31,4 +35,3 @@ Para ejecutar los casos de prueba, utiliza los siguientes comandos:
     ```bash
      npm run cucumber-report
     ``` 
-
