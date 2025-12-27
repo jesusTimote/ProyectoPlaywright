@@ -1,0 +1,87 @@
+name: E2E Playwright Cucumber
+
+on:
+  workflow_dispatch:
+    inputs:
+      ambiente:
+        description: 'Ambiente de ejecución (dev o uat)'
+        required: true
+        default: 'dev'
+        type: choice
+        options:
+          - dev
+          - uat
+      tag_ejecucion:
+        description: 'Tag para filtrar escenarios (ej: @smoke, not @wip)'
+        required: true
+        default: '@smoke'
+
+jobs:
+  e2e:
+    runs-on: ubuntu-latest
+
+    env:
+      AMBIENTE: ${{ github.event.inputs.ambiente }}
+      TAG_EJECUCION: ${{ github.event.inputs.tag_ejecucion }}
+      ALLURE_RESULTS_DIR: ./allure-results
+      ALLURE_REPORT_DIR: ./allure-report
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: |
+          npm ci
+          npx playwright install --with-deps
+
+      - name: Show inputs
+        run: |
+          echo "Ambiente: $AMBIENTE"
+          echo "Tag de ejecución: $TAG_EJECUCION"
+
+      # Ejecución de pruebas según ambiente
+      - name: Run Cucumber (DEV)
+        if: env.AMBIENTE == 'dev'
+        run: |
+          node ./src/config/removeReports.js & \
+          cross-env ENV=dev npx cucumber-js -p test_runner --tags "$TAG_EJECUCION"
+
+      - name: Run Cucumber (UAT)
+        if: env.AMBIENTE == 'uat'
+        run: |
+          node ./src/config/removeReports.js & \
+          cross-env ENV=uat npx cucumber-js -p test_runner --tags "$TAG_EJECUCION"
+
+      # Generar reporte Allure
+      - name: Generate Allure report
+        if: always()
+        run: |
+          npx allure generate "$ALLURE_RESULTS_DIR" -o "$ALLURE_REPORT_DIR" --clean
+
+      - name: Upload Allure report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: allure-report-${{ env.AMBIENTE }}
+          path: ${{ env.ALLURE_REPORT_DIR }}
+
+      # Generar reporte HTML de Cucumber
+      - name: Generate Cucumber HTML report
+        if: always()
+        run: |
+          npm run cucumber-report
+
+      - name: Upload Cucumber HTML report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: cucumber-html-${{ env.AMBIENTE }}
+          path: cucumber-report.html
+          if-no-files-found: ignore
