@@ -11,7 +11,7 @@ const REPORTS_DIR = "reports";
 
 // Opciones de configuración para los navegadores
 const browserOptions: LaunchOptions = {
-  headless: false,
+  headless: true,
   //timeout: 60000,
   slowMo: 0,
   args: [
