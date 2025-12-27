@@ -1,6 +1,12 @@
+@OrangeHRM
 Feature: Navegación 
-   @demo 
-   Scenario: Navegacion en OrangeHRM
-     Given inicio sesion en la pagina OrangeHRM
+
+  Background: Navegacion en OrangeHRM
+    Given inicio sesion en la pagina OrangeHRM
      And ingreso con las credenciales de usuario
-     When selecciono el menu de Admin
+     Then valido el inicio de sesion si es exitoso
+
+
+   @RegistroEmpleado
+   Scenario: Registro de un nuevo empleado
+     And selecciono la opcion de PIM en el menu de navegacion y registrto un nuevo empleado

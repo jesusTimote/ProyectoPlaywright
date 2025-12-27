@@ -11,6 +11,10 @@ Then('ingreso con las credenciales de usuario',async function () {
 
 })
 
-When('selecciono el menu de Admin',async function () {
+When('valido el inicio de sesion si es exitoso',async function () {
   await prueba1.ValidateDasahboard();
+})
+
+Then('selecciono la opcion de PIM en el menu de navegacion y registrto un nuevo empleado',async () => {
+  await prueba1.RegisterEmployee();
 })
