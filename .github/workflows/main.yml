@@ -45,20 +45,14 @@ jobs:
           echo "Ambiente: $AMBIENTE"
           echo "Tag de ejecución: $TAG_EJECUCION"
 
-      # Ejecución de pruebas según ambiente
-      - name: Run Cucumber (DEV)
-        if: env.AMBIENTE == 'dev'
+      - name: Run Cucumber tests
         run: |
-          node ./src/config/removeReports.js & \
-          cross-env ENV=dev npx cucumber-js -p test_runner --tags "$TAG_EJECUCION"
+          if [ "$AMBIENTE" = "dev" ]; then
+            npm run cucumber-test-dev -- --tags "$TAG_EJECUCION"
+          else
+            npm run cucumber-test-uat -- --tags "$TAG_EJECUCION"
+          fi
 
-      - name: Run Cucumber (UAT)
-        if: env.AMBIENTE == 'uat'
-        run: |
-          node ./src/config/removeReports.js & \
-          cross-env ENV=uat npx cucumber-js -p test_runner --tags "$TAG_EJECUCION"
-
-      # Generar reporte Allure
       - name: Generate Allure report
         if: always()
         run: |
@@ -71,7 +65,6 @@ jobs:
           name: allure-report-${{ env.AMBIENTE }}
           path: ${{ env.ALLURE_REPORT_DIR }}
 
-      # Generar reporte HTML de Cucumber
       - name: Generate Cucumber HTML report
         if: always()
         run: |
