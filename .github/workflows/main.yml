@@ -47,6 +47,7 @@ jobs:
 
       - name: Run Cucumber tests
         run: |
+          mkdir -p reports
           if [ "$AMBIENTE" = "dev" ]; then
             npm run cucumber-test-dev -- --tags "$TAG_EJECUCION"
           else
