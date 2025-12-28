@@ -57,7 +57,7 @@ jobs:
       - name: Generate Allure report
         if: always()
         run: |
-          npx allure generate "$ALLURE_RESULTS_DIR" -o "$ALLURE_REPORT_DIR" --clean
+          npm run allure-report
 
       - name: Upload Allure report
         if: always()
