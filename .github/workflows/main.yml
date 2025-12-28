@@ -23,8 +23,6 @@ jobs:
     env:
       AMBIENTE: ${{ github.event.inputs.ambiente }}
       TAG_EJECUCION: ${{ github.event.inputs.tag_ejecucion }}
-      ALLURE_RESULTS_DIR: ./allure-results
-      ALLURE_REPORT_DIR: ./allure-report
 
     steps:
       - name: Checkout
@@ -40,41 +38,30 @@ jobs:
           npm install
           npx playwright install --with-deps
 
-      - name: Show inputs
+      - name: Init reports folder
         run: |
-          echo "Ambiente: $AMBIENTE"
-          echo "Tag de ejecución: $TAG_EJECUCION"
+          npm run init
+          ls -l reports
 
       - name: Run Cucumber tests
         run: |
-          mkdir -p reports
           if [ "$AMBIENTE" = "dev" ]; then
             npm run cucumber-test-dev -- --tags "$TAG_EJECUCION" --format json:./reports/cucumber_report.json
           else
             npm run cucumber-test-uat -- --tags "$TAG_EJECUCION" --format json:./reports/cucumber_report.json
           fi
-
-      - name: Generate Allure report
-        if: always()
-        run: |
-          npm run allure-report
-
-      - name: Upload Allure report
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: allure-report-${{ env.AMBIENTE }}
-          path: ${{ env.ALLURE_REPORT_DIR }}
+          ls -l reports
 
       - name: Generate Cucumber HTML report
         if: always()
         run: |
           npm run cucumber-report
+          ls -l reports
 
       - name: Upload Cucumber HTML report
         if: always()
         uses: actions/upload-artifact@v4
         with:
           name: cucumber-html-${{ env.AMBIENTE }}
-          path: reports/cucumber-report.html
+          path: reports/cucumber_report.html
           if-no-files-found: error
