@@ -49,9 +49,9 @@ jobs:
         run: |
           mkdir -p reports
           if [ "$AMBIENTE" = "dev" ]; then
-            npm run cucumber-test-dev -- --tags "$TAG_EJECUCION"
+            npm run cucumber-test-dev -- --tags "$TAG_EJECUCION" --format json:./reports/cucumber_report.json
           else
-            npm run cucumber-test-uat -- --tags "$TAG_EJECUCION"
+            npm run cucumber-test-uat -- --tags "$TAG_EJECUCION" --format json:./reports/cucumber_report.json
           fi
 
       - name: Generate Allure report
@@ -77,4 +77,4 @@ jobs:
         with:
           name: cucumber-html-${{ env.AMBIENTE }}
           path: reports/cucumber-report.html
-          if-no-files-found: ignore
+          if-no-files-found: error
